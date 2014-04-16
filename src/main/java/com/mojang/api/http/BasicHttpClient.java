@@ -1,3 +1,4 @@
+
 package com.mojang.api.http;
 
 import java.io.BufferedReader;
@@ -10,14 +11,13 @@ import java.net.URL;
 import java.util.List;
 
 /*
-    TODO: refactor so unit tests can be written :)
+ * TODO: refactor so unit tests can be written :)
  */
 public class BasicHttpClient implements HttpClient {
 
     private static BasicHttpClient instance;
 
-    private BasicHttpClient() {
-    }
+    private BasicHttpClient() {}
 
     public static BasicHttpClient getInstance() {
         if (instance == null) {
@@ -28,12 +28,14 @@ public class BasicHttpClient implements HttpClient {
 
     @Override
     public String post(URL url, HttpBody body, List<HttpHeader> headers) throws IOException {
-        return post(url, null, body, headers);
+        return this.post(url, null, body, headers);
     }
 
     @Override
     public String post(URL url, Proxy proxy, HttpBody body, List<HttpHeader> headers) throws IOException {
-        if (proxy == null) proxy = Proxy.NO_PROXY;
+        if (proxy == null) {
+            proxy = Proxy.NO_PROXY;
+        }
         HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
         connection.setRequestMethod("POST");
 

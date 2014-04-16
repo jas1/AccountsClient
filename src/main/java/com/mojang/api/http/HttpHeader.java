@@ -1,3 +1,4 @@
+
 package com.mojang.api.http;
 
 public class HttpHeader {
@@ -10,7 +11,7 @@ public class HttpHeader {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -18,7 +19,7 @@ public class HttpHeader {
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(String value) {

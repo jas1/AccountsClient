@@ -1,3 +1,4 @@
+
 package com.mojang.api.http;
 
 public class HttpBody {
@@ -9,7 +10,7 @@ public class HttpBody {
     }
 
     public byte[] getBytes() {
-        return bodyString != null ? bodyString.getBytes() : new byte[0];
+        return this.bodyString != null ? this.bodyString.getBytes() : new byte[0];
     }
 
 }

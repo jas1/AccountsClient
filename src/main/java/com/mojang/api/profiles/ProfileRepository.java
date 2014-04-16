@@ -1,3 +1,4 @@
+
 package com.mojang.api.profiles;
 
 public interface ProfileRepository {
