@@ -38,7 +38,6 @@ public class HttpProfileRepository implements ProfileRepository {
     public Profile[] findProfilesByNames(String... names) {
         List<Profile> profiles = new ArrayList<Profile>();
         try {
-
             List<HttpHeader> headers = new ArrayList<HttpHeader>();
             headers.add(new HttpHeader("Content-Type", "application/json"));
 
@@ -62,15 +61,32 @@ public class HttpProfileRepository implements ProfileRepository {
         }
         catch (Exception e) {
             e.printStackTrace();
-            // TODO: logging and allowing consumer to react?
         }
 
         return profiles.toArray(new Profile[profiles.size()]);
     }
 
+    @Override
+    public Profile findProfileByUUID(String uuid) {
+        try {
+            List<HttpHeader> headers = new ArrayList<HttpHeader>();
+            headers.add(new HttpHeader("Content-Type", "application/json"));
+
+            return this.get(this.getSessionUrl(uuid), headers);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private URL getProfilesUrl() throws MalformedURLException {
         // To lookup Minecraft profiles, agent should be "minecraft"
         return new URL("https://api.mojang.com/profiles/" + this.agent);
+    }
+
+    private URL getSessionUrl(String uuid) throws MalformedURLException {
+        return new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
     }
 
     private Profile[] post(URL url, HttpBody body, List<HttpHeader> headers) throws IOException {
@@ -95,6 +111,22 @@ public class HttpProfileRepository implements ProfileRepository {
             }
         }
         return profiles;
+    }
+
+    private Profile get(URL url, List<HttpHeader> headers) throws IOException {
+        String response = this.client.get(url, headers);
+
+        if (response.isEmpty()) {
+            return null;
+        }
+
+        JSONObject object = new JSONObject(response);
+
+        Profile profile = new Profile();
+        profile.setId(object.getString("id"));
+        profile.setName(object.getString("name"));
+
+        return profile;
     }
 
     private static HttpBody getHttpBody(String... namesBatch) {

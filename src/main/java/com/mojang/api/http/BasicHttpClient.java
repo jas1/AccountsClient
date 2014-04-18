@@ -64,4 +64,39 @@ public class BasicHttpClient implements HttpClient {
         reader.close();
         return response.toString();
     }
+
+    @Override
+    public String get(URL url, List<HttpHeader> headers) throws IOException {
+        return this.get(url, null, headers);
+    }
+
+    @Override
+    public String get(URL url, Proxy proxy, List<HttpHeader> headers) throws IOException {
+        if (proxy == null) {
+            proxy = Proxy.NO_PROXY;
+        }
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+        connection.setRequestMethod("GET");
+
+        for (HttpHeader header : headers) {
+            connection.setRequestProperty(header.getName(), header.getValue());
+        }
+
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        connection.setDoOutput(false);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String line;
+        StringBuffer response = new StringBuffer();
+
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+            response.append('\r');
+        }
+
+        reader.close();
+        return response.toString();
+    }
+
 }
