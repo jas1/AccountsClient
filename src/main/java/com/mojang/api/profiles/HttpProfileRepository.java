@@ -1,21 +1,18 @@
-
 package com.mojang.api.profiles;
 
+import com.mojang.api.http.BasicHttpClient;
+import com.mojang.api.http.HttpBody;
+import com.mojang.api.http.HttpClient;
+import com.mojang.api.http.HttpHeader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import me.heldplayer.util.json.JSONArray;
 import me.heldplayer.util.json.JSONObject;
 import me.heldplayer.util.json.JSONWriter;
-
-import com.mojang.api.http.BasicHttpClient;
-import com.mojang.api.http.HttpBody;
-import com.mojang.api.http.HttpClient;
-import com.mojang.api.http.HttpHeader;
 
 public class HttpProfileRepository implements ProfileRepository {
 
@@ -56,11 +53,10 @@ public class HttpProfileRepository implements ProfileRepository {
 
                 start = end;
                 i++;
-            }
-            while (start < namesCount);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+            } while (start < namesCount);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
         }
 
         return profiles.toArray(new Profile[profiles.size()]);
@@ -73,8 +69,7 @@ public class HttpProfileRepository implements ProfileRepository {
             headers.add(new HttpHeader("Content-Type", "application/json"));
 
             return this.get(this.getSessionUrl(uuid), headers);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
